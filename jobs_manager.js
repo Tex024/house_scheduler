@@ -21,8 +21,28 @@ function getWeekNumber(date) {
     return Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);
 }
 
+// Ensure jobs do not repeat from the previous week
+function assignJobsWithoutRepetition(weeklyJobs, previousAssignments, weekSeed) {
+    const people = ["Jack", "Ester", "Sam", "Marta"];
+    const shuffledJobs = shuffleArray(weeklyJobs, weekSeed);
+    const assignments = {};
+
+    people.forEach((person, index) => {
+        let job = shuffledJobs[index];
+        
+        // If the person had this job last week, reshuffle
+        while (previousAssignments[person] === job) {
+            job = shuffledJobs[Math.floor(seededRandom(weekSeed + index) * weeklyJobs.length)];
+        }
+        
+        assignments[person] = job;
+    });
+
+    return assignments;
+}
+
 // Generate weekly and weekend jobs based on the seed
-function generateWeeklyJobs(weekSeed) {
+function generateWeeklyJobs(weekSeed, previousWeeklyAssignments) {
     const people = ["Jack", "Ester", "Sam", "Marta"];
     const weeklyJobs = [
         "Apparecchiare + Svuotare lavastoviglie",
@@ -37,17 +57,17 @@ function generateWeeklyJobs(weekSeed) {
         "Piegare cose stese",
     ];
 
-    const shuffledWeekly = shuffleArray(weeklyJobs, 212);
-    const shuffledWeekend = shuffleArray(weekendJobs, 212 + 1000);
+    // Assign weekly jobs ensuring no repetition
+    const weeklyAssignments = assignJobsWithoutRepetition(weeklyJobs, previousWeeklyAssignments, weekSeed);
+    const weekendAssignments = shuffleArray(weekendJobs, weekSeed + 1000);
 
     const assignments = {
-        weeklyJobs: {},
+        weeklyJobs: weeklyAssignments,
         weekendJobs: {},
     };
 
     people.forEach((person, index) => {
-        assignments.weeklyJobs[person] = shuffledWeekly[index];
-        assignments.weekendJobs[person] = shuffledWeekend[index];
+        assignments.weekendJobs[person] = weekendAssignments[index];
     });
 
     return assignments;
@@ -102,8 +122,13 @@ function populateJobsAndKitchen() {
     const weekSeed = today.getFullYear() * 100 + getWeekNumber(today); // e.g., "202447"
     const daySeed = parseInt(today.toISOString().split("T")[0].replace(/-/g, "")); // e.g., "20241118"
 
-    const { weeklyJobs, weekendJobs } = generateWeeklyJobs(weekSeed);
+    const previousWeeklyAssignments = JSON.parse(localStorage.getItem('previousWeeklyAssignments')) || {};
+
+    const { weeklyJobs, weekendJobs } = generateWeeklyJobs(weekSeed, previousWeeklyAssignments);
     const kitchenSchedule = generateKitchenSchedule(daySeed);
+
+    // Save current weekly jobs to prevent repetition in the next week
+    localStorage.setItem('previousWeeklyAssignments', JSON.stringify(weeklyJobs));
 
     // Populate weekly jobs
     populateJobs("current-week-list", weeklyJobs);
