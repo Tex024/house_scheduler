@@ -1,100 +1,99 @@
-/* Reset some default styles */
+/* General Reset and Layout */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-/* Body and Layout */
 body {
     font-family: 'Arial', sans-serif;
-    background-color: #f4f4f4;
+    background-color: #f4f7f6;
     color: #333;
     line-height: 1.6;
-    padding: 20px;
 }
 
-header {
-    background-color: #4CAF50;
-    color: white;
-    padding: 20px 0;
-    text-align: center;
-    margin-bottom: 30px;
-}
-
-header h1 {
-    font-size: 2.5rem;
-}
-
-/* Main content styling */
-main {
-    max-width: 960px;
+.container {
+    width: 80%;
     margin: 0 auto;
 }
 
-section {
-    background-color: white;
+header {
+    background-color: #5e9ca0;
+    padding: 20px 0;
+    text-align: center;
+    color: #fff;
+}
+
+h1 {
+    font-size: 2.5rem;
+}
+
+/* Section Styles */
+.section {
+    background-color: #fff;
+    margin: 20px 0;
     padding: 20px;
-    margin-bottom: 20px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-section h2 {
+h2 {
     font-size: 1.8rem;
     margin-bottom: 15px;
-    color: #333;
-}
-
-ul {
-    list-style-type: none;
-}
-
-li {
-    font-size: 1.2rem;
-    padding: 10px 0;
-    border-bottom: 1px solid #ddd;
-}
-
-li:last-child {
-    border-bottom: none;
-}
-
-/* Footer Styling */
-footer {
+    color: #5e9ca0;
     text-align: center;
-    font-size: 0.9rem;
-    margin-top: 40px;
-    color: #666;
+}
+
+/* Job List Styles */
+.job-list {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.job-list li {
+    background-color: #f9f9f9;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+/* Hover Effect */
+.job-list li:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Footer */
+footer {
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 15px;
+    margin-top: 30px;
 }
 
 footer p {
-    padding: 10px;
-    background-color: #f4f4f4;
-    border-radius: 8px;
-}
-
-/* Add hover effects */
-li:hover {
-    background-color: #f9f9f9;
-    cursor: pointer;
-}
-
-section h2 {
-    color: #4CAF50;
+    font-size: 1rem;
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
+    .container {
+        width: 95%;
+    }
+
     header h1 {
         font-size: 2rem;
     }
 
-    section {
-        padding: 15px;
+    h2 {
+        font-size: 1.5rem;
     }
 
-    li {
+    .job-list li {
+        padding: 12px;
         font-size: 1rem;
     }
 }
