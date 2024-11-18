@@ -1,5 +1,5 @@
-// Household members
-const members = ["Jack", "Ester", "Sam", "Marta"];
+// Household members sorted alphabetically
+const members = ["Ester", "Jack", "Marta", "Sam"];
 
 // Weekly jobs and weekend jobs
 const weeklyJobs = [
@@ -10,59 +10,42 @@ const weeklyJobs = [
 ];
 const weekendJobs = ["Lavatrice", "Spesa", "Stendere", "Piegare cose stese"];
 
-// Function to generate a pseudo-random seed based on the current week number
-function getWeekSeed() {
+// Function to get the current week number
+function getWeekNumber() {
     const now = new Date();
     const oneJan = new Date(now.getFullYear(), 0, 1);
     const numberOfDays = Math.floor((now - oneJan) / (24 * 60 * 60 * 1000));
     return Math.floor(numberOfDays / 7); // Returns current week number
 }
 
-// Custom pseudo-random number generator (deterministic based on seed)
-function seededRandom(seed) {
-    const x = Math.sin(seed) * 10000;
-    return x - Math.floor(x); // Returns a pseudo-random number between 0 and 1
-}
-
-// Deterministic shuffle using seeded random number generator
-function seededShuffle(array, seed) {
-    let result = array.slice();
-    let m = result.length, t, i;
-
-    // Shuffle algorithm with seed
-    while (m) {
-        i = Math.floor(seededRandom(seed) * m--); 
-        seed++; // Change seed for next iteration
-        t = result[m];
-        result[m] = result[i];
-        result[i] = t;
-    }
-
-    return result;
+// Function to rotate jobs based on week number
+function rotateArray(arr, weekNumber) {
+    let rotatedArr = arr.slice();
+    let rotateBy = weekNumber % arr.length; // Calculate the shift based on the week number
+    return rotatedArr.slice(rotateBy).concat(rotatedArr.slice(0, rotateBy));
 }
 
 // Function to assign weekly and weekend jobs
 function assignJobs() {
-    const seed = getWeekSeed();
+    const weekNumber = getWeekNumber();
 
-    // Shuffle jobs with the seed to ensure consistency
-    const shuffledWeeklyJobs = seededShuffle(weeklyJobs, seed);
-    const shuffledWeekendJobs = seededShuffle(weekendJobs, seed + 1); // Different seed for weekend jobs
-    const shuffledMembers = seededShuffle(members, seed + 2); // Shuffle members with another seed for rotation
+    // Rotate jobs and assign to members
+    const rotatedWeeklyJobs = rotateArray(weeklyJobs, weekNumber);
+    const rotatedWeekendJobs = rotateArray(weekendJobs, weekNumber);
 
-    // Assign jobs for current week
+    // Assign weekly jobs
     const currentWeekList = document.getElementById('current-week-list');
-    shuffledMembers.forEach((member, index) => {
+    members.forEach((member, index) => {
         const li = document.createElement('li');
-        li.textContent = `${member}: ${shuffledWeeklyJobs[index]}`;
+        li.textContent = `${member}: ${rotatedWeeklyJobs[index]}`;
         currentWeekList.appendChild(li);
     });
 
-    // Assign jobs for current weekend
+    // Assign weekend jobs
     const currentWeekendList = document.getElementById('current-weekend-list');
-    shuffledMembers.forEach((member, index) => {
+    members.forEach((member, index) => {
         const li = document.createElement('li');
-        li.textContent = `${member}: ${shuffledWeekendJobs[index]}`;
+        li.textContent = `${member}: ${rotatedWeekendJobs[index]}`;
         currentWeekendList.appendChild(li);
     });
 }
@@ -72,13 +55,15 @@ function assignKitchenSchedule() {
     const today = new Date();
     const kitchenList = document.getElementById('daily-kitchen-list');
 
+    const weekNumber = getWeekNumber(); // Ensure rotation starts from the current week
+
     for (let i = 0; i < 7; i++) {
         const day = new Date(today);
         day.setDate(today.getDate() + i);
 
         const li = document.createElement('li');
         const dayOfWeek = day.toLocaleDateString('en-US', { weekday: 'long' });
-        const member = members[(getWeekSeed() + i) % members.length]; // Rotate members based on the day
+        const member = members[(weekNumber + i) % members.length]; // Rotate members based on the day
 
         li.textContent = `${dayOfWeek}: ${member}`;
         kitchenList.appendChild(li);
