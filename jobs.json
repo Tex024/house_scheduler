@@ -1,6 +1,6 @@
 {
     "currentWeek": {
-        "startDate": "2024-11-18",
+        "startDate": "2024-11-11",
         "weeklyJobs": {
             "Jack": "Apparecchiare + Svuotare lavastoviglie",
             "Ester": "Sparecchiare + Spazzare",
@@ -15,7 +15,7 @@
         }
     },
     "nextWeek": {
-        "startDate": "2024-11-25",
+        "startDate": "2024-11-18",
         "weeklyJobs": {
             "Jack": "Sparecchiare + Spazzare",
             "Ester": "Pattumiera",
