@@ -68,6 +68,34 @@ function generateKitchenSchedule(daySeed) {
     return schedule;
 }
 
+// Function to populate weekly and weekend jobs
+function populateJobs(sectionId, jobs) {
+    const section = document.getElementById(sectionId);
+    if (!section) return;
+
+    section.innerHTML = ""; // Clear existing content
+
+    for (const person in jobs) {
+        const jobItem = document.createElement("div");
+        jobItem.textContent = `${person}: ${jobs[person]}`;
+        section.appendChild(jobItem);
+    }
+}
+
+// Function to populate daily kitchen schedule
+function populateKitchenSchedule(schedule) {
+    const section = document.getElementById("kitchen-schedule");
+    if (!section) return;
+
+    section.innerHTML = ""; // Clear existing content
+
+    for (const [date, person] of Object.entries(schedule)) {
+        const scheduleItem = document.createElement("div");
+        scheduleItem.textContent = `${date}: ${person}`;
+        section.appendChild(scheduleItem);
+    }
+}
+
 // Populate jobs and kitchen schedule
 function populateJobsAndKitchen() {
     const today = new Date();
