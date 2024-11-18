@@ -5,20 +5,20 @@ async function loadJobs() {
     return data;
 }
 
-// Function to populate the page with job data
-function populateWeek(sectionId, weekData) {
+// Function to populate weekly and weekend jobs
+function populateJobs(sectionId, jobData) {
     const section = document.getElementById(sectionId);
     const list = section.querySelector('ul');
     list.innerHTML = ''; // Clear existing content
 
-    for (const [person, jobs] of Object.entries(weekData.jobs)) {
+    for (const [person, job] of Object.entries(jobData)) {
         const listItem = document.createElement('li');
-        listItem.innerHTML = `<strong>${person}:</strong> Easy: ${jobs.easy}, Difficult: ${jobs.difficult}`;
+        listItem.innerHTML = `<strong>${person}:</strong> ${job}`;
         list.appendChild(listItem);
     }
 }
 
-// Function to update weeks if time has passed
+// Function to check and update weeks if time has passed
 function checkAndUpdateWeeks(data) {
     const currentDate = new Date();
     const currentWeekDate = new Date(data.currentWeek.startDate);
@@ -35,17 +35,32 @@ function checkAndUpdateWeeks(data) {
     return data;
 }
 
-// Function to generate random jobs for the next week
+// Function to generate random weekly and weekend jobs
 function generateNextWeek(startDate) {
     const people = ["Jack", "Ester", "Sam", "Marta"];
-    const easyJobs = ["Dusting", "Watering plants", "Vacuuming", "Folding clothes", "Sweeping", "Wiping windows", "Tidying shelves", "Dusting lamps"];
-    const difficultJobs = ["Cleaning the garage", "Cooking", "Mowing the lawn", "Deep cleaning the bathroom", "Fixing the shed", "Organizing the pantry", "Raking leaves", "Washing curtains"];
+    const weeklyJobs = [
+        "Apparecchiare + Svuotare lavastoviglie",
+        "Sparecchiare + Spazzare",
+        "Pattumiera",
+        "Carta Igienica + Pulizia Casa"
+    ];
+    const weekendJobs = [
+        "Lavatrice",
+        "Spesa",
+        "Stendere",
+        "Piegare cose stese"
+    ];
 
-    const newJobs = {};
-    people.forEach(person => {
-        const easyJob = easyJobs[Math.floor(Math.random() * easyJobs.length)];
-        const difficultJob = difficultJobs[Math.floor(Math.random() * difficultJobs.length)];
-        newJobs[person] = { easy: easyJob, difficult: difficultJob };
+    const shuffle = (array) => array.sort(() => Math.random() - 0.5);
+
+    const weeklyShuffled = shuffle([...weeklyJobs]);
+    const weekendShuffled = shuffle([...weekendJobs]);
+
+    const weeklyAssignments = {};
+    const weekendAssignments = {};
+    people.forEach((person, index) => {
+        weeklyAssignments[person] = weeklyShuffled[index];
+        weekendAssignments[person] = weekendShuffled[index];
     });
 
     const nextStartDate = new Date(startDate);
@@ -53,7 +68,8 @@ function generateNextWeek(startDate) {
 
     return {
         startDate: nextStartDate.toISOString().split('T')[0],
-        jobs: newJobs
+        weeklyJobs: weeklyAssignments,
+        weekendJobs: weekendAssignments
     };
 }
 
@@ -65,8 +81,8 @@ async function main() {
     data = checkAndUpdateWeeks(data);
 
     // Populate sections with updated data
-    populateWeek('current-week', data.currentWeek);
-    populateWeek('next-week', data.nextWeek);
+    populateJobs('current-week', data.currentWeek.weeklyJobs);
+    populateJobs('current-weekend', data.currentWeek.weekendJobs);
 }
 
 // Run the script
