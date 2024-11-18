@@ -18,15 +18,21 @@ function getWeekSeed() {
     return Math.floor(numberOfDays / 7); // Returns current week number
 }
 
-// Simple function for shuffling arrays (deterministic based on seed)
+// Custom pseudo-random number generator (deterministic based on seed)
+function seededRandom(seed) {
+    const x = Math.sin(seed) * 10000;
+    return x - Math.floor(x); // Returns a pseudo-random number between 0 and 1
+}
+
+// Deterministic shuffle using seeded random number generator
 function seededShuffle(array, seed) {
     let result = array.slice();
     let m = result.length, t, i;
 
     // Shuffle algorithm with seed
     while (m) {
-        i = Math.floor(seed % m--); 
-        seed = Math.floor(seed / m + 1); // Update seed
+        i = Math.floor(seededRandom(seed) * m--); 
+        seed++; // Change seed for next iteration
         t = result[m];
         result[m] = result[i];
         result[i] = t;
