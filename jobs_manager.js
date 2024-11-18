@@ -1,78 +1,86 @@
-// Household members sorted alphabetically
-const members = ["Ester", "Jack", "Marta", "Sam"];
+// Array of people living in the house
+const people = ["Jack", "Ester", "Sam", "Marta"];
 
-// Weekly jobs and weekend jobs
+// Jobs for the week
 const weeklyJobs = [
-    "Apparecchiare + Svuotare lavastoviglie",
-    "Sparecchiare + Spazzare",
-    "Pattumiera",
+    "Apparecchiare + Svuotare lavastoviglie", 
+    "Sparecchiare + Spazzare", 
+    "Pattumiera", 
     "Carta Igienica + Pulizia Casa"
 ];
-const weekendJobs = ["Lavatrice", "Spesa", "Stendere", "Piegare cose stese"];
 
-// Function to get the current week number
-function getWeekNumber() {
-    const now = new Date();
-    const oneJan = new Date(now.getFullYear(), 0, 1);
-    const numberOfDays = Math.floor((now - oneJan) / (24 * 60 * 60 * 1000));
-    return 5; // Returns current week number
+// Jobs for the weekend
+const weekendJobs = [
+    "Lavatrice", 
+    "Spesa", 
+    "Stendere", 
+    "Piegare cose stese"
+];
+
+// Function to create a pseudo-random order based on a fixed seed
+function seededShuffle(array, seed) {
+    let shuffled = array.slice(); // Copy the array
+    let random = seed; // Use the seed for randomness
+
+    for (let i = shuffled.length - 1; i > 0; i--) {
+        random = (random * 9301 + 49297) % 233280; // Simple pseudo-random number generator
+        const j = Math.floor((random / 233280) * (i + 1)); // Random index based on seed
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]; // Swap elements
+    }
+
+    return shuffled;
 }
 
-// Function to rotate jobs based on week number
-function rotateArray(arr, weekNumber) {
-    let rotateBy = weekNumber % arr.length; // Calculate the shift based on the week number
-    if (rotateBy === 0) rotateBy = 1; // Ensure we always rotate by at least 1 for variation
+// Seed based on the current week number for the year (ensures a different order each week)
+const currentWeekNumber = new Date().getFullYear() * 100 + Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 1)) / (7 * 24 * 60 * 60 * 1000));
 
-    return arr.slice(rotateBy).concat(arr.slice(0, rotateBy)); // Correct slicing
+// Shuffle the jobs based on the current week number
+const weeklyAssignments = seededShuffle(weeklyJobs, currentWeekNumber);
+const weekendAssignments = seededShuffle(weekendJobs, currentWeekNumber);
+
+// Assign jobs to people based on shuffled jobs
+function assignJobs(jobs, people) {
+    let assignments = [];
+    for (let i = 0; i < people.length; i++) {
+        assignments.push(`${people[i]}: ${jobs[i]}`);
+    }
+    return assignments;
 }
 
-// Function to assign weekly and weekend jobs
-function assignJobs() {
-    const weekNumber = getWeekNumber();
+// Assign weekly and weekend jobs
+const weeklyJobAssignments = assignJobs(weeklyAssignments, people);
+const weekendJobAssignments = assignJobs(weekendAssignments, people);
 
-    // Rotate jobs and assign to members
-    const rotatedWeeklyJobs = rotateArray(weeklyJobs, weekNumber);
-    const rotatedWeekendJobs = rotateArray(weekendJobs, weekNumber);
-
-    // Assign weekly jobs
-    const currentWeekList = document.getElementById('current-week-list');
-    members.forEach((member, index) => {
-        const li = document.createElement('li');
-        li.textContent = `${member}: ${rotatedWeeklyJobs[index]}`;
-        currentWeekList.appendChild(li);
-    });
-
-    // Assign weekend jobs
-    const currentWeekendList = document.getElementById('current-weekend-list');
-    members.forEach((member, index) => {
-        const li = document.createElement('li');
-        li.textContent = `${member}: ${rotatedWeekendJobs[index]}`;
-        currentWeekendList.appendChild(li);
-    });
-}
-
-// Function to assign kitchen schedule for the next 7 days
-function assignKitchenSchedule() {
+// Kitchen schedule rotation (rotates daily)
+function getKitchenSchedule(people) {
+    let schedule = [];
     const today = new Date();
-    const kitchenList = document.getElementById('daily-kitchen-list');
-
-    const weekNumber = getWeekNumber(); // Ensure rotation starts from the current week
-
     for (let i = 0; i < 7; i++) {
         const day = new Date(today);
         day.setDate(today.getDate() + i);
-
-        const li = document.createElement('li');
-        const dayOfWeek = day.toLocaleDateString('en-US', { weekday: 'long' });
-        const member = members[(weekNumber + i) % members.length]; // Rotate members based on the day
-
-        li.textContent = `${dayOfWeek}: ${member}`;
-        kitchenList.appendChild(li);
+        const personIndex = (currentWeekNumber + i) % people.length; // Rotate based on the current day
+        const options = { weekday: 'long', month: 'long', day: 'numeric' };
+        schedule.push(`${day.toLocaleDateString(undefined, options)}: ${people[personIndex]}`);
     }
+    return schedule;
 }
 
-// Initialize the assignments when the page loads
-document.addEventListener('DOMContentLoaded', () => {
-    assignJobs();
-    assignKitchenSchedule();
-});
+const kitchenSchedule = getKitchenSchedule(people);
+
+// Populate the UI with the assignments
+function populateList(listId, items) {
+    const ul = document.getElementById(listId);
+    ul.innerHTML = ''; // Clear any existing content
+    items.forEach(item => {
+        const li = document.createElement('li');
+        li.textContent = item;
+        ul.appendChild(li);
+    });
+}
+
+// Populate the job lists on the webpage
+window.onload = function () {
+    populateList("current-week-list", weeklyJobAssignments);
+    populateList("current-weekend-list", weekendJobAssignments);
+    populateList("daily-kitchen-list", kitchenSchedule);
+};
