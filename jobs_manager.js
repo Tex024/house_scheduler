@@ -37,8 +37,8 @@ function generateWeeklyJobs(weekSeed) {
         "Piegare cose stese",
     ];
 
-    const shuffledWeekly = shuffleArray(weeklyJobs, 200);
-    const shuffledWeekend = shuffleArray(weekendJobs, 200 + 1000);
+    const shuffledWeekly = shuffleArray(weeklyJobs, 212);
+    const shuffledWeekend = shuffleArray(weekendJobs, 212 + 1000);
 
     const assignments = {
         weeklyJobs: {},
