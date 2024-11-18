@@ -56,8 +56,7 @@ function getKitchenSchedule(people, weekNumber) {
 }
 
 // Get the current week number
-// const currentWeekNumber = getCurrentWeekNumber();
-const currentWeekNumber = 2;
+const currentWeekNumber = getCurrentWeekNumber();
 
 // Assign weekly and weekend jobs based on the current week number
 const weeklyJobAssignments = assignJobs(weeklyJobs, people, currentWeekNumber);
