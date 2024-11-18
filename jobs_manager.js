@@ -14,7 +14,7 @@ function shuffleArray(array, seed) {
     return arr;
 }
 
-// Get week number of the year
+// Get the week number of the year
 function getWeekNumber(date) {
     const firstDayOfYear = new Date(date.getFullYear(), 0, 1);
     const pastDaysOfYear = (date - firstDayOfYear) / (24 * 60 * 60 * 1000);
@@ -42,7 +42,7 @@ function assignJobsWithoutRepetition(weeklyJobs, previousAssignments, weekSeed) 
 }
 
 // Generate weekly and weekend jobs based on the seed
-function generateWeeklyJobs(weekSeed, previousWeeklyAssignments) {
+function generateWeeklyJobs(weekSeed, previousAssignments) {
     const people = ["Jack", "Ester", "Sam", "Marta"];
     const weeklyJobs = [
         "Apparecchiare + Svuotare lavastoviglie",
@@ -57,8 +57,8 @@ function generateWeeklyJobs(weekSeed, previousWeeklyAssignments) {
         "Piegare cose stese",
     ];
 
-    // Assign weekly jobs ensuring no repetition
-    const weeklyAssignments = assignJobsWithoutRepetition(weeklyJobs, previousWeeklyAssignments, weekSeed);
+    // Assign weekly jobs ensuring no repetition from the previous week
+    const weeklyAssignments = assignJobsWithoutRepetition(weeklyJobs, previousAssignments, weekSeed);
     const weekendAssignments = shuffleArray(weekendJobs, weekSeed + 1000);
 
     const assignments = {
@@ -119,16 +119,17 @@ function populateKitchenSchedule(listId, schedule) {
 // Populate all sections
 function populateJobsAndKitchen() {
     const today = new Date();
-    const weekSeed = today.getFullYear() * 100 + getWeekNumber(today); // e.g., "202447"
-    const daySeed = parseInt(today.toISOString().split("T")[0].replace(/-/g, "")); // e.g., "20241118"
+    const currentWeekSeed = today.getFullYear() * 100 + getWeekNumber(today); // e.g., "202447"
+    
+    // Calculate previous week's seed
+    const previousWeekDate = new Date(today);
+    previousWeekDate.setDate(today.getDate() - 7);
+    const previousWeekSeed = previousWeekDate.getFullYear() * 100 + getWeekNumber(previousWeekDate); // e.g., "202446"
 
-    const previousWeeklyAssignments = JSON.parse(localStorage.getItem('previousWeeklyAssignments')) || {};
-
-    const { weeklyJobs, weekendJobs } = generateWeeklyJobs(weekSeed, previousWeeklyAssignments);
-    const kitchenSchedule = generateKitchenSchedule(daySeed);
-
-    // Save current weekly jobs to prevent repetition in the next week
-    localStorage.setItem('previousWeeklyAssignments', JSON.stringify(weeklyJobs));
+    // Generate jobs for current and previous week
+    const previousWeeklyAssignments = generateWeeklyJobs(previousWeekSeed, {}); // Empty assignments for the previous week
+    const { weeklyJobs, weekendJobs } = generateWeeklyJobs(currentWeekSeed, previousWeeklyAssignments.weeklyJobs);
+    const kitchenSchedule = generateKitchenSchedule(currentWeekSeed);
 
     // Populate weekly jobs
     populateJobs("current-week-list", weeklyJobs);
