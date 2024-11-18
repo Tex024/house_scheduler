@@ -31,8 +31,9 @@ function seededShuffle(array, seed) {
     return shuffled;
 }
 
+const testDate = new Date('2024-08-05');
 // Seed based on the current week number for the year (ensures a different order each week)
-const currentWeekNumber = new Date().getFullYear() * 100 + Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 1)) / (7 * 24 * 60 * 60 * 1000));
+const currentWeekNumber = testDate.getFullYear() * 100 + Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 1)) / (7 * 24 * 60 * 60 * 1000));
 
 // Shuffle the jobs based on the current week number
 const weeklyAssignments = seededShuffle(weeklyJobs, currentWeekNumber);
