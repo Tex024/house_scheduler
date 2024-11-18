@@ -1,89 +1,91 @@
-// Function to load JSON data
-async function loadJobs() {
-    const response = await fetch('jobs.json');
-    const data = await response.json();
-    return data;
+// Seeded random number generator
+function seededRandom(seed) {
+    const x = Math.sin(seed) * 10000;
+    return x - Math.floor(x);
 }
 
-// Function to populate weekly and weekend jobs
-function populateJobs(sectionId, jobData) {
-    const section = document.getElementById(sectionId);
-    const list = section.querySelector('ul');
-    list.innerHTML = ''; // Clear existing content
-
-    for (const [person, job] of Object.entries(jobData)) {
-        const listItem = document.createElement('li');
-        listItem.innerHTML = `<strong>${person}:</strong> ${job}`;
-        list.appendChild(listItem);
+// Shuffle array using a seed
+function shuffleArray(array, seed) {
+    const arr = [...array];
+    for (let i = arr.length - 1; i > 0; i--) {
+        const randomIndex = Math.floor(seededRandom(seed + i) * (i + 1));
+        [arr[i], arr[randomIndex]] = [arr[randomIndex], arr[i]];
     }
+    return arr;
 }
 
-// Function to check and update weeks if time has passed
-function checkAndUpdateWeeks(data) {
-    const currentDate = new Date();
-    const currentWeekDate = new Date(data.currentWeek.startDate);
-    const nextWeekDate = new Date(data.nextWeek.startDate);
-
-    if (currentDate >= nextWeekDate) {
-        // Replace current week with next week
-        data.currentWeek = data.nextWeek;
-
-        // Generate new random jobs for next week
-        data.nextWeek = generateNextWeek(currentWeekDate);
-    }
-
-    return data;
+// Get week number of the year
+function getWeekNumber(date) {
+    const firstDayOfYear = new Date(date.getFullYear(), 0, 1);
+    const pastDaysOfYear = (date - firstDayOfYear) / (24 * 60 * 60 * 1000);
+    return Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);
 }
 
-// Function to generate random weekly and weekend jobs
-function generateNextWeek(startDate) {
+// Generate weekly and weekend jobs based on the seed
+function generateWeeklyJobs(weekSeed) {
     const people = ["Jack", "Ester", "Sam", "Marta"];
     const weeklyJobs = [
         "Apparecchiare + Svuotare lavastoviglie",
         "Sparecchiare + Spazzare",
         "Pattumiera",
-        "Carta Igienica + Pulizia Casa"
+        "Carta Igienica + Pulizia Casa",
     ];
     const weekendJobs = [
         "Lavatrice",
         "Spesa",
         "Stendere",
-        "Piegare cose stese"
+        "Piegare cose stese",
     ];
 
-    const shuffle = (array) => array.sort(() => Math.random() - 0.5);
+    const shuffledWeekly = shuffleArray(weeklyJobs, weekSeed);
+    const shuffledWeekend = shuffleArray(weekendJobs, weekSeed + 1000);
 
-    const weeklyShuffled = shuffle([...weeklyJobs]);
-    const weekendShuffled = shuffle([...weekendJobs]);
+    const assignments = {
+        weeklyJobs: {},
+        weekendJobs: {},
+    };
 
-    const weeklyAssignments = {};
-    const weekendAssignments = {};
     people.forEach((person, index) => {
-        weeklyAssignments[person] = weeklyShuffled[index];
-        weekendAssignments[person] = weekendShuffled[index];
+        assignments.weeklyJobs[person] = shuffledWeekly[index];
+        assignments.weekendJobs[person] = shuffledWeekend[index];
     });
 
-    const nextStartDate = new Date(startDate);
-    nextStartDate.setDate(startDate.getDate() + 7);
-
-    return {
-        startDate: nextStartDate.toISOString().split('T')[0],
-        weeklyJobs: weeklyAssignments,
-        weekendJobs: weekendAssignments
-    };
+    return assignments;
 }
 
-// Main logic
-async function main() {
-    let data = await loadJobs();
+// Generate daily kitchen schedule based on the seed
+function generateKitchenSchedule(daySeed) {
+    const people = ["Jack", "Ester", "Sam", "Marta"];
+    const schedule = {};
 
-    // Check and update weeks if needed
-    data = checkAndUpdateWeeks(data);
+    for (let i = 0; i < 7; i++) {
+        const date = new Date();
+        date.setDate(date.getDate() + i); // Next 7 days
+        const formattedDate = date.toISOString().split("T")[0];
+        schedule[formattedDate] = people[i % people.length];
+    }
 
-    // Populate sections with updated data
-    populateJobs('current-week', data.currentWeek.weeklyJobs);
-    populateJobs('current-weekend', data.currentWeek.weekendJobs);
+    return schedule;
+}
+
+// Populate jobs and kitchen schedule
+function populateJobsAndKitchen() {
+    const today = new Date();
+    const weekSeed = today.getFullYear() * 100 + getWeekNumber(today); // e.g., "202447"
+    const daySeed = parseInt(today.toISOString().split("T")[0].replace(/-/g, "")); // e.g., "20241118"
+
+    const { weeklyJobs, weekendJobs } = generateWeeklyJobs(weekSeed);
+    const kitchenSchedule = generateKitchenSchedule(daySeed);
+
+    // Populate weekly jobs
+    populateJobs("current-week", weeklyJobs);
+
+    // Populate weekend jobs
+    populateJobs("current-weekend", weekendJobs);
+
+    // Populate kitchen schedule
+    populateKitchenSchedule(kitchenSchedule);
 }
 
 // Run the script
-main();
+populateJobsAndKitchen();
