@@ -15,17 +15,15 @@ function getWeekNumber() {
     const now = new Date();
     const oneJan = new Date(now.getFullYear(), 0, 1);
     const numberOfDays = Math.floor((now - oneJan) / (24 * 60 * 60 * 1000));
-    console.log("Week number", Math.floor(numberOfDays / 7));
-
-    return 10
     return Math.floor(numberOfDays / 7); // Returns current week number
 }
 
 // Function to rotate jobs based on week number
 function rotateArray(arr, weekNumber) {
-    let rotatedArr = arr.slice();
     let rotateBy = weekNumber % arr.length; // Calculate the shift based on the week number
-    return rotatedArr.slice(rotateBy).concat(rotatedArr.slice(0, rotateBy));
+    if (rotateBy === 0) rotateBy = 1; // Ensure we always rotate by at least 1 for variation
+
+    return arr.slice(rotateBy).concat(arr.slice(0, rotateBy)); // Correct slicing
 }
 
 // Function to assign weekly and weekend jobs
