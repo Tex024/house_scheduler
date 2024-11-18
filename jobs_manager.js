@@ -31,7 +31,7 @@ function seededShuffle(array, seed) {
     return shuffled;
 }
 
-const testDate = new Date('2024-08-07');
+const testDate = new Date('2024-08-11');
 console.log(testDate)
 
 // Seed based on the current week number for the year (ensures a different order each week)
