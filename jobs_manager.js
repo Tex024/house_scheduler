@@ -15,6 +15,7 @@ function getWeekNumber() {
     const now = new Date();
     const oneJan = new Date(now.getFullYear(), 0, 1);
     const numberOfDays = Math.floor((now - oneJan) / (24 * 60 * 60 * 1000));
+    return 10
     return Math.floor(numberOfDays / 7); // Returns current week number
 }
 
@@ -27,7 +28,7 @@ function rotateArray(arr, weekNumber) {
 
 // Function to assign weekly and weekend jobs
 function assignJobs() {
-    const weekNumber = 4;
+    const weekNumber = getWeekNumber();
 
     // Rotate jobs and assign to members
     const rotatedWeeklyJobs = rotateArray(weeklyJobs, weekNumber);
@@ -55,7 +56,7 @@ function assignKitchenSchedule() {
     const today = new Date();
     const kitchenList = document.getElementById('daily-kitchen-list');
 
-    const weekNumber = 4; // Ensure rotation starts from the current week
+    const weekNumber = getWeekNumber(); // Ensure rotation starts from the current week
 
     for (let i = 0; i < 7; i++) {
         const day = new Date(today);
