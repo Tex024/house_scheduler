@@ -1,6 +1,6 @@
 // Function to load kitchen JSON data
 async function loadKitchenData() {
-    const response = await fetch('kitchen_manager.json');
+    const response = await fetch('kitchen.json');
     const data = await response.json();
     return data;
 }
