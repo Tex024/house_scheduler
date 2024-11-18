@@ -27,7 +27,7 @@ function rotateArray(arr, weekNumber) {
 
 // Function to assign weekly and weekend jobs
 function assignJobs() {
-    const weekNumber = getWeekNumber();
+    const weekNumber = 3;
 
     // Rotate jobs and assign to members
     const rotatedWeeklyJobs = rotateArray(weeklyJobs, weekNumber);
@@ -55,7 +55,7 @@ function assignKitchenSchedule() {
     const today = new Date();
     const kitchenList = document.getElementById('daily-kitchen-list');
 
-    const weekNumber = getWeekNumber(); // Ensure rotation starts from the current week
+    const weekNumber = 3; // Ensure rotation starts from the current week
 
     for (let i = 0; i < 7; i++) {
         const day = new Date(today);
