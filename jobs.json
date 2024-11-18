@@ -1,20 +1,32 @@
 {
     "currentWeek": {
         "startDate": "2024-11-18",
-        "jobs": {
-            "Jack": { "easy": "Dusting", "difficult": "Cleaning the garage" },
-            "Ester": { "easy": "Watering plants", "difficult": "Cooking" },
-            "Sam": { "easy": "Vacuuming", "difficult": "Mowing the lawn" },
-            "Marta": { "easy": "Folding clothes", "difficult": "Deep cleaning the bathroom" }
+        "weeklyJobs": {
+            "Jack": "Apparecchiare + Svuotare lavastoviglie",
+            "Ester": "Sparecchiare + Spazzare",
+            "Sam": "Pattumiera",
+            "Marta": "Carta Igienica + Pulizia Casa"
+        },
+        "weekendJobs": {
+            "Jack": "Lavatrice",
+            "Ester": "Spesa",
+            "Sam": "Stendere",
+            "Marta": "Piegare cose stese"
         }
     },
     "nextWeek": {
         "startDate": "2024-11-25",
-        "jobs": {
-            "Jack": { "easy": "Sweeping", "difficult": "Fixing the shed" },
-            "Ester": { "easy": "Wiping windows", "difficult": "Organizing the pantry" },
-            "Sam": { "easy": "Tidying shelves", "difficult": "Raking leaves" },
-            "Marta": { "easy": "Dusting lamps", "difficult": "Washing curtains" }
+        "weeklyJobs": {
+            "Jack": "Sparecchiare + Spazzare",
+            "Ester": "Pattumiera",
+            "Sam": "Carta Igienica + Pulizia Casa",
+            "Marta": "Apparecchiare + Svuotare lavastoviglie"
+        },
+        "weekendJobs": {
+            "Jack": "Spesa",
+            "Ester": "Stendere",
+            "Sam": "Piegare cose stese",
+            "Marta": "Lavatrice"
         }
     }
 }
