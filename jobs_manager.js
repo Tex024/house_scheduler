@@ -15,7 +15,7 @@ function getWeekNumber() {
     const now = new Date();
     const oneJan = new Date(now.getFullYear(), 0, 1);
     const numberOfDays = Math.floor((now - oneJan) / (24 * 60 * 60 * 1000));
-    return 4; // Returns current week number
+    return 5; // Returns current week number
 }
 
 // Function to rotate jobs based on week number
