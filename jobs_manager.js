@@ -68,35 +68,35 @@ function generateKitchenSchedule(daySeed) {
     return schedule;
 }
 
-// Function to populate weekly and weekend jobs
-function populateJobs(sectionId, jobs) {
-    const section = document.getElementById(sectionId);
-    if (!section) return;
+// Populate weekly and weekend jobs into respective lists
+function populateJobs(listId, jobs) {
+    const list = document.getElementById(listId);
+    if (!list) return;
 
-    section.innerHTML = ""; // Clear existing content
+    list.innerHTML = ""; // Clear existing content
 
     for (const person in jobs) {
-        const jobItem = document.createElement("div");
-        jobItem.textContent = `${person}: ${jobs[person]}`;
-        section.appendChild(jobItem);
+        const listItem = document.createElement("li");
+        listItem.textContent = `${person}: ${jobs[person]}`;
+        list.appendChild(listItem);
     }
 }
 
-// Function to populate daily kitchen schedule
-function populateKitchenSchedule(schedule) {
-    const section = document.getElementById("kitchen-schedule");
-    if (!section) return;
+// Populate daily kitchen schedule into the list
+function populateKitchenSchedule(listId, schedule) {
+    const list = document.getElementById(listId);
+    if (!list) return;
 
-    section.innerHTML = ""; // Clear existing content
+    list.innerHTML = ""; // Clear existing content
 
     for (const [date, person] of Object.entries(schedule)) {
-        const scheduleItem = document.createElement("div");
-        scheduleItem.textContent = `${date}: ${person}`;
-        section.appendChild(scheduleItem);
+        const listItem = document.createElement("li");
+        listItem.textContent = `${date}: ${person}`;
+        list.appendChild(listItem);
     }
 }
 
-// Populate jobs and kitchen schedule
+// Populate all sections
 function populateJobsAndKitchen() {
     const today = new Date();
     const weekSeed = today.getFullYear() * 100 + getWeekNumber(today); // e.g., "202447"
@@ -106,13 +106,13 @@ function populateJobsAndKitchen() {
     const kitchenSchedule = generateKitchenSchedule(daySeed);
 
     // Populate weekly jobs
-    populateJobs("current-week", weeklyJobs);
+    populateJobs("current-week-list", weeklyJobs);
 
     // Populate weekend jobs
-    populateJobs("current-weekend", weekendJobs);
+    populateJobs("current-weekend-list", weekendJobs);
 
     // Populate kitchen schedule
-    populateKitchenSchedule(kitchenSchedule);
+    populateKitchenSchedule("daily-kitchen-list", kitchenSchedule);
 }
 
 // Run the script after the DOM is fully loaded
