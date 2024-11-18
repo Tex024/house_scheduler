@@ -21,28 +21,8 @@ function getWeekNumber(date) {
     return Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);
 }
 
-// Ensure jobs do not repeat from the previous week
-function assignJobsWithoutRepetition(weeklyJobs, previousAssignments, weekSeed) {
-    const people = ["Jack", "Ester", "Sam", "Marta"];
-    const shuffledJobs = shuffleArray(weeklyJobs, weekSeed);
-    const assignments = {};
-
-    people.forEach((person, index) => {
-        let job = shuffledJobs[index];
-        
-        // If the person had this job last week, reshuffle
-        while (previousAssignments[person] === job) {
-            job = shuffledJobs[Math.floor(seededRandom(weekSeed + index) * weeklyJobs.length)];
-        }
-        
-        assignments[person] = job;
-    });
-
-    return assignments;
-}
-
 // Generate weekly and weekend jobs based on the seed
-function generateWeeklyJobs(weekSeed, previousAssignments) {
+function generateWeeklyJobs(weekSeed) {
     const people = ["Jack", "Ester", "Sam", "Marta"];
     const weeklyJobs = [
         "Apparecchiare + Svuotare lavastoviglie",
@@ -57,20 +37,20 @@ function generateWeeklyJobs(weekSeed, previousAssignments) {
         "Piegare cose stese",
     ];
 
-    // Assign weekly jobs ensuring no repetition from the previous week
-    const weeklyAssignments = assignJobsWithoutRepetition(weeklyJobs, previousAssignments, weekSeed);
+    // Shuffle jobs randomly with the given seed
+    const weeklyAssignments = shuffleArray(weeklyJobs, weekSeed);
     const weekendAssignments = shuffleArray(weekendJobs, weekSeed + 1000);
 
-    const assignments = {
-        weeklyJobs: weeklyAssignments,
-        weekendJobs: {},
-    };
+    // Assign jobs to people
+    const weeklyJobAssignments = {};
+    const weekendJobAssignments = {};
 
     people.forEach((person, index) => {
-        assignments.weekendJobs[person] = weekendAssignments[index];
+        weeklyJobAssignments[person] = weeklyAssignments[index];
+        weekendJobAssignments[person] = weekendAssignments[index];
     });
 
-    return assignments;
+    return { weeklyJobAssignments, weekendJobAssignments };
 }
 
 // Generate daily kitchen schedule based on the seed
@@ -121,21 +101,15 @@ function populateJobsAndKitchen() {
     const today = new Date();
     const currentWeekSeed = today.getFullYear() * 100 + getWeekNumber(today); // e.g., "202447"
     
-    // Calculate previous week's seed
-    const previousWeekDate = new Date(today);
-    previousWeekDate.setDate(today.getDate() - 7);
-    const previousWeekSeed = previousWeekDate.getFullYear() * 100 + getWeekNumber(previousWeekDate); // e.g., "202446"
-
-    // Generate jobs for current and previous week
-    const previousWeeklyAssignments = generateWeeklyJobs(previousWeekSeed, {}); // Empty assignments for the previous week
-    const { weeklyJobs, weekendJobs } = generateWeeklyJobs(currentWeekSeed, previousWeeklyAssignments.weeklyJobs);
+    // Generate jobs for current week
+    const { weeklyJobAssignments, weekendJobAssignments } = generateWeeklyJobs(currentWeekSeed);
     const kitchenSchedule = generateKitchenSchedule(currentWeekSeed);
 
     // Populate weekly jobs
-    populateJobs("current-week-list", weeklyJobs);
+    populateJobs("current-week-list", weeklyJobAssignments);
 
     // Populate weekend jobs
-    populateJobs("current-weekend-list", weekendJobs);
+    populateJobs("current-weekend-list", weekendJobAssignments);
 
     // Populate kitchen schedule
     populateKitchenSchedule("daily-kitchen-list", kitchenSchedule);
