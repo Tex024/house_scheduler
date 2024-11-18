@@ -115,5 +115,7 @@ function populateJobsAndKitchen() {
     populateKitchenSchedule(kitchenSchedule);
 }
 
-// Run the script
-populateJobsAndKitchen();
+// Run the script after the DOM is fully loaded
+document.addEventListener("DOMContentLoaded", () => {
+    populateJobsAndKitchen();
+});
