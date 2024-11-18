@@ -3,32 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weekly House Jobs</title>
+    <title>Household Jobs</title>
 </head>
 <body>
     <header>
-        <h1>Weekly House Jobs</h1>
+        <h1>Household Jobs</h1>
     </header>
     
     <main>
         <!-- Current Week Section -->
         <section id="current-week">
-            <h2>Current Week</h2>
+            <h2>Current Weekly Jobs</h2>
             <ul id="current-week-list"></ul>
         </section>
         
-        <!-- Next Week Section -->
-        <section id="next-week">
-            <h2>Next Week</h2>
-            <ul id="next-week-list"></ul>
+        <!-- Current Weekend Section -->
+        <section id="current-weekend">
+            <h2>Current Weekend Jobs</h2>
+            <ul id="current-weekend-list"></ul>
+        </section>
+
+        <!-- Daily Kitchen Schedule -->
+        <section id="daily-kitchen">
+            <h2>Kitchen Schedule (Next 7 Days)</h2>
+            <ul id="daily-kitchen-list"></ul>
         </section>
     </main>
     
     <footer>
-        <p>&copy; 2024 House Management</p>
+        <p>&copy; 2024 Tex House Management</p>
     </footer>
     
     <!-- Import JS -->
     <script src="jobs_manager.js"></script>
+    <script src="kitchen_manager.js"></script>
 </body>
 </html>
