@@ -32,7 +32,7 @@ function seededShuffle(array, seed) {
 }
 
 const testDate = new Date('2024-08-05');
-debug.log(testDate)
+console.log(testDate)
 
 // Seed based on the current week number for the year (ensures a different order each week)
 const currentWeekNumber = testDate.getFullYear() * 100 + Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 1)) / (7 * 24 * 60 * 60 * 1000));
